@@ -96,4 +96,30 @@ for f in directories.keys():
     if directories.get(f).get('size') <= 100000:
         smalls.append(f)
         total.append(directories.get(f).get('size'))
-print(sum(total))
+print('space of all directories with size below 100,000 added up:', sum(total))
+
+# part 2: find smallest directory that frees up enough space for update to install
+space_used = directories.get('/').get('size')
+space_avail = 70000000-space_used
+space_needed = 30000000
+diff = space_needed - space_avail
+print('need to free up:', diff)
+# go through each level and check when size is equal to diff
+
+def check_size(folders):
+    b = False
+    for f in folders:
+        if directories.get(f).get('size') >= diff:
+            print(f, directories.get(f).get('size'))
+            b = True
+        else:
+            b = False
+    return b
+
+level_list = [(path, directories.get(path).get('level')) for path in directories.keys()]
+for l in range(max_level, 0, -1):
+    fs = [path[0] for path in level_list if path[1] == l]
+    br = check_size(fs)
+    if br is True:
+        break
+    
